@@ -19,9 +19,11 @@ bot.on(message('voice'), async ctx => {
         const mp3Path = await ogg.toMp3(oggPath, userId)
         
         const text = await openai.transcription(mp3Path)
-        // const response = await openai.chat(text)
+        const messages = [{role: openai.roles.USER, content: text}]
+        const response = await openai.chat(messages)
         
         await ctx.reply(text ? `Козаче, ось шо ти тут напездiв: "${text}"` : 'Сорi, Андрєй тимчасово мене вирубив i пiшов дрочити свого корнiшона. Якось iншим разом.')
+        await ctx.reply(response.content)
         
     } catch (e) {
         console.log('Error while voice message', e.message);
