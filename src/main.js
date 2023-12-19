@@ -3,12 +3,14 @@ import config from 'config'
 import { message } from 'telegraf/filters'
 import { ogg } from './ogg.js' 
 import { openai } from './openai.js' 
+import { code } from 'telegraf/format' 
 
 const bot = new Telegraf(config.get('TELEGRAM_TOKEN'))
 
 
 bot.on(message('voice'), async ctx => {
     try {
+        await ctx.reply(code('Прийняв, чекай на вiдповiдь...'))
         const link = await ctx.telegram.getFileLink(ctx.message.voice.file_id)
         const userId = String(ctx.message.from.id)
         const date = String(ctx.message.date)
@@ -19,8 +21,8 @@ bot.on(message('voice'), async ctx => {
         const text = await openai.transcription(mp3Path)
         // const response = await openai.chat(text)
         
-        await ctx.reply(text ? text : 'nothing recorded')
-        console.log(ctx.message);
+        await ctx.reply(text ? `Козаче, ось шо ти тут напездiв: "${text}"` : 'Сорi, Андрєй тимчасово мене вирубив i пiшов дрочити свого корнiшона. Якось iншим разом.')
+        
     } catch (e) {
         console.log('Error while voice message', e.message);
     }
